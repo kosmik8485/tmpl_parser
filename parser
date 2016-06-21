@@ -1,4 +1,7 @@
 #!/bin/bash
+# HTML to TMPL for svcms
+TMPL_DIR="$HOME/Work/Parser"
+
 echo "[% TRY ; VIEW layout(prefix=>'tmpl/layout/',suffix=>'.tmpl') ; END ; VIEW app(prefix='tmpl/',suffix=>'.tmpl') ; END %]" > index.tmpl
 echo "[%# USE date(locale=>'ru_RU.CP1251') %]" >> index.tmpl
 echo "[%# MACRO df1 BLOCK ; '<' _ (tag||'div') _ ' class=\"' _ (cls||'date') _ '\">' _ date.format(val,'%d.%m.%Y') _ '</' _ (tag||'div') _ '>' IF val && val != '0000-00-00 00:00:00' ; END %]" >> index.tmpl
@@ -74,23 +77,12 @@ mv tmpl/index.tmpl index.tmpl
 
 find ./tmpl \( -name "catalog*" -o -name "spisok*" -o -name "good*" \) -exec mkdir -p -m777 tmpl/catalog \; -exec mv {} tmpl/catalog/ \;
 find ./tmpl -name "news*" -exec mkdir -p -m777 tmpl/news \; -exec mv {} tmpl/news/ \;
-find ./tmpl -name "servi*" -exec mkdir -p -m777 tmpl/service \; -exec mv {} tmpl/service/ \;
+find ./tmpl \( -name "servi*" -o -name "uslug*" \) -exec mkdir -p -m777 tmpl/service \; -exec mv {} tmpl/service/ \;
 find ./tmpl -name "arti*" -exec mkdir -p -m777 tmpl/article \; -exec mv {} tmpl/article/ \;
 find ./tmpl -name "proje*" -exec mkdir -p -m777 tmpl/project \; -exec mv {} tmpl/project/ \;
 
-cp $HOME/Work/Parser/*.tmpl tmpl/
-
-mkdir tmpl/layout
-mv tmpl/header.tmpl tmpl/layout/
-mv tmpl/head.tmpl tmpl/layout/
-mv tmpl/footer.tmpl tmpl/layout/
-mv tmpl/content.tmpl tmpl/layout/
-mv tmpl/aside.tmpl tmpl/layout/
-mv tmpl/popup.tmpl tmpl/layout/
-mv tmpl/paging.tmpl tmpl/layout/
-mv tmpl/promo.tmpl tmpl/layout/
-mv tmpl/path_info.tmpl tmpl/layout/
-mv tmpl/top_menu.tmpl tmpl/layout/
+cp -R $TMPL_DIR/tmpl tmpl/
+find ./tmpl -regex "\(header\|head\|footer\|content\|aside\|popup\)\.tmpl" -exec mv {} tmpl/layout \;
 
 echo "[% CATCH ; CLEAR ; INCLUDE tmpl/error.tmpl ; END %]" >> index.tmpl
 echo "[% IF LSIDE.size %]<aside class=\"side\">[% INCLUDE \$b FOREACH b IN LSIDE %]</aside>[% END %]" >> tmpl/layout/aside.tmpl
@@ -100,4 +92,3 @@ chmod -Rf 777 *
 
 zip -r files.zip *
 zip -d files.zip *.sh *.odt *.doc *.rb guiapp parser*
-
