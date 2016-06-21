@@ -1,60 +1,60 @@
 #!/bin/bash
 # HTML to TMPL for svcms
 TMPL_DIR="$HOME/Work/Parser"
-
+mkdir -p -m777 tmpl/layout
 echo "[% TRY ; VIEW layout(prefix=>'tmpl/layout/',suffix=>'.tmpl') ; END ; VIEW app(prefix='tmpl/',suffix=>'.tmpl') ; END %]" > index.tmpl
-echo "[%# USE date(locale=>'ru_RU.CP1251') %]" >> index.tmpl
-echo "[%# MACRO df1 BLOCK ; '<' _ (tag||'div') _ ' class=\"' _ (cls||'date') _ '\">' _ date.format(val,'%d.%m.%Y') _ '</' _ (tag||'div') _ '>' IF val && val != '0000-00-00 00:00:00' ; END %]" >> index.tmpl
-echo "[%# MACRO to_ps BLOCK ; '<' _ (tag||'div') _ ' class=\"' _ (cls||'price') _ '\">' _ val _ '</' _ (tag||'div') _ '>' IF val ; END %]" >> index.tmpl
-echo "[%# MACRO to_p BLOCK ; '<' _ (tag||'div') _ ' class=\"' _ (cls||'price') _ '\">' _ val.split('\.').0.chunk(-3).join(' ') _ '</' _ (tag||'div') _ '>' IF val > 0 ; END %]" >> index.tmpl
+echo "[% USE date(locale=>'ru_RU.CP1251') %]" >> index.tmpl
+echo "[% MACRO df1 BLOCK ; '<' _ (tag||'div') _ ' class=\"' _ (cls||'date') _ '\">' _ date.format(val,'%d.%m.%Y') _ '</' _ (tag||'div') _ '>' IF val && val != '0000-00-00 00:00:00' ; END %]" >> index.tmpl
+echo "[% MACRO to_ps BLOCK ; '<' _ (tag||'div') _ ' class=\"' _ (cls||'price') _ '\">' _ val _ '</' _ (tag||'div') _ '>' IF val ; END %]" >> index.tmpl
+echo "[% MACRO to_p BLOCK ; '<' _ (tag||'div') _ ' class=\"' _ (cls||'price') _ '\">' _ val.split('\.').0.chunk(-3).join(' ') _ '</' _ (tag||'div') _ '>' IF val > 0 ; END %]" >> index.tmpl
 
 sed 's/\t/  /g' index.html > index.tmp
 
 #<head>
-sed '/<head>/,/<\/head>/!d;s/\t/  /g' index.tmp > head.tmpl
-echo "<script src='/js/ajax.js'></script>" >> head.tmpl
+sed '/<head>/,/<\/head>/!d;s/\t/  /g' index.tmp > tmpl/layout/head.tmpl
+echo "<script src='/js/ajax.js'></script>" >> tmpl/yaout/head.tmpl
 sed 's/<\/head>/<\/head>\r\n[% layout.head %]/' index.tmp > index.tmp.0
 sed '/<head>/,/<\/head>/d' index.tmp.0 > index.tmp.1
 
 #<!--// header //-->
-sed '/<!--\/\/ header \/\/-->/,/<!--\/\/ end header \/\/-->/!d;s/\t/  /g' index.tmp.1 > header.tmpl
+sed '/<!--\/\/ header \/\/-->/,/<!--\/\/ end header \/\/-->/!d;s/\t/  /g' index.tmp.1 > tmpl/layout/header.tmpl
 sed 's/<!--\/\/ end header \/\/-->/<!--\/\/ end header \/\/-->\r\n[% layout.header %]\r\n/' index.tmp.1 > index.tmp.2
 sed '/<!--\/\/ header \/\/-->/,/<!--\/\/ end header \/\/-->/d' index.tmp.2 > index.tmp.3
 
 #<!--// footer //-->
-sed '/<!--\/\/ footer \/\/-->/,/<!--\/\/ end footer \/\/-->/!d;s/\t/  /g' index.tmp.3 > footer.tmpl
+sed '/<!--\/\/ footer \/\/-->/,/<!--\/\/ end footer \/\/-->/!d;s/\t/  /g' index.tmp.3 > tmpl/layout/footer.tmpl
 sed 's/<!--\/\/ end footer \/\/-->/<!--\/\/ end footer \/\/-->\r\n[% layout.footer %]\r\n/' index.tmp.3 > index.tmp.4
 sed '/<!--\/\/ footer \/\/-->/,/<!--\/\/ end footer \/\/-->/d' index.tmp.4 > index.tmp.5
 
 #<!--// left side //-->
-sed '/<!--\/\/ left side \/\/-->/,/<!--\/\/ end left side \/\/-->/!d;s/\t/  /g' index.tmp.5 > aside.tmpl
+sed '/<!--\/\/ left side \/\/-->/,/<!--\/\/ end left side \/\/-->/!d;s/\t/  /g' index.tmp.5 > tmpl/layout/aside.tmpl
 sed 's/<!--\/\/ end left side \/\/-->/<!--\/\/ end left side \/\/-->\r\n[% layout.aside %]\r\n/' index.tmp.5 > index.tmp.6
 sed '/<!--\/\/ left side \/\/-->/,/<!--\/\/ end left side \/\/-->/d' index.tmp.6 > index.tmp.7
 
 #<!--// aside //-->
-sed '/<!--\/\/ aside \/\/-->/,/<!--\/\/ end aside \/\/-->/!d;s/\t/  /g' index.tmp.7 >> aside.tmpl
+sed '/<!--\/\/ aside \/\/-->/,/<!--\/\/ end aside \/\/-->/!d;s/\t/  /g' index.tmp.7 >> tmpl/layout/aside.tmpl
 sed 's/<!--\/\/ end aside \/\/-->/<!--\/\/ end aside \/\/-->\r\n[% layout.aside %]\r\n/' index.tmp.7 > index.tmp.8
 sed '/<!--\/\/ aside \/\/-->/,/<!--\/\/ end aside \/\/-->/d' index.tmp.8 > index.tmp.9
 
 #<!--// right side //-->
-sed '/<!--\/\/ right side \/\/-->/,/<!--\/\/ end right side \/\/-->/!d;s/\t/  /g' index.tmp.9 >> aside.tmpl
+sed '/<!--\/\/ right side \/\/-->/,/<!--\/\/ end right side \/\/-->/!d;s/\t/  /g' index.tmp.9 >> tmpl/layout/aside.tmpl
 sed 's/<!--\/\/ end right side \/\/-->/<!--\/\/ end right side \/\/-->\r\n[% layout.aside %]\r\n/' index.tmp.9 > index.tmp.10
 sed '/<!--\/\/ right side \/\/-->/,/<!--\/\/ end right side \/\/-->/d' index.tmp.10 > index.tmp.11
 
 #<!--// content //-->
-echo "[% IF page_type == 'main' %]" > content.tmpl
-sed '/<!--\/\/ content \/\/-->/,/<!--\/\/ end content \/\/-->/!d;s/\t/  /g' index.tmp.11 >> content.tmpl
-echo "[% ELSE ; app.\$page_type ; END %]" >> content.tmpl
+echo "[% IF page_type == 'main' %]" > tmpl/layout/content.tmpl
+sed '/<!--\/\/ content \/\/-->/,/<!--\/\/ end content \/\/-->/!d;s/\t/  /g' index.tmp.11 >> tmpl/layout/content.tmpl
+echo "[% ELSE ; app.\$page_type ; END %]" >> tmpl/layout/content.tmpl
 sed 's/<!--\/\/ end content \/\/-->/<!--\/\/ end content \/\/-->\r\n[% layout.content %]\r\n/' index.tmp.11 > index.tmp.12
 sed '/<!--\/\/ content \/\/-->/,/<!--\/\/ end content \/\/-->/d' index.tmp.12 > index.tmp.13
 
 #<!--// popup //-->
-sed '/<!--\/\/ popup \/\/-->/,/<!--\/\/ end popup \/\/-->/!d;s/\t/  /g' index.tmp.13 > popup.tmpl
+sed '/<!--\/\/ popup \/\/-->/,/<!--\/\/ end popup \/\/-->/!d;s/\t/  /g' index.tmp.13 > tmpl/layout/popup.tmpl
 sed 's/<!--\/\/ end popup \/\/-->/<!--\/\/ end popup \/\/-->\r\n[% layout.popup %]\r\n/' index.tmp.13 > index.tmp.14
 sed '/<!--\/\/ popup \/\/-->/,/<!--\/\/ end popup \/\/-->/d' index.tmp.14 >> index.tmp.15
 
 #<!--// modals //-->
-sed '/<!--\/\/ modals \/\/-->/,/<!--\/\/ end modals \/\/-->/!d;s/\t/  /g' index.tmp.15 >> popup.tmpl
+sed '/<!--\/\/ modals \/\/-->/,/<!--\/\/ end modals \/\/-->/!d;s/\t/  /g' index.tmp.15 >> tmpl/layout/popup.tmpl
 sed 's/<!--\/\/ end modals \/\/-->/<!--\/\/ end modals \/\/-->\r\n[% layout.popup %]\r\n/' index.tmp.15 > index.tmp.16
 sed '/<!--\/\/ modals \/\/-->/,/<!--\/\/ end modals \/\/-->/d' index.tmp.16 >> index.tmpl
 
@@ -64,25 +64,20 @@ do
   if [ "$html" != "index.html" ]
   then
     echo "[% import(content) %]" > ${html%.*}.tmpl
-    sed '/<!--\/\/ content \/\/-->/,/<!--\/\/ end content \/\/-->/!d;s/\t/  /g' $html >> ${html%.*}.tmpl
+    sed '/<!--\/\/ content \/\/-->/,/<!--\/\/ end content \/\/-->/!d;s/\t/  /g' $html >> tmpl/${html%.*}.tmpl
   fi
 done
 
 rm *.tmp.*
 rm *.tmp
 
-mkdir -m 777 tmpl
-mv *.tmpl tmpl/
-mv tmpl/index.tmpl index.tmpl
-
-find ./tmpl \( -name "catalog*" -o -name "spisok*" -o -name "good*" \) -exec mkdir -p -m777 tmpl/catalog \; -exec mv {} tmpl/catalog/ \;
+find ./tmpl -regex "\(catalog\|spisok\|good\).*" -exec mkdir -p -m777 tmpl/catalog \; -exec mv {} tmpl/catalog/ \;
 find ./tmpl -name "news*" -exec mkdir -p -m777 tmpl/news \; -exec mv {} tmpl/news/ \;
-find ./tmpl \( -name "servi*" -o -name "uslug*" \) -exec mkdir -p -m777 tmpl/service \; -exec mv {} tmpl/service/ \;
+find ./tmpl -regex "\(servi\|uslug\).*" -exec mkdir -p -m777 tmpl/service \; -exec mv {} tmpl/service/ \;
 find ./tmpl -name "arti*" -exec mkdir -p -m777 tmpl/article \; -exec mv {} tmpl/article/ \;
 find ./tmpl -name "proje*" -exec mkdir -p -m777 tmpl/project \; -exec mv {} tmpl/project/ \;
 
 cp -R $TMPL_DIR/tmpl tmpl/
-find ./tmpl -regex "\(header\|head\|footer\|content\|aside\|popup\)\.tmpl" -exec mv {} tmpl/layout \;
 
 echo "[% CATCH ; CLEAR ; INCLUDE tmpl/error.tmpl ; END %]" >> index.tmpl
 echo "[% IF LSIDE.size %]<aside class=\"side\">[% INCLUDE \$b FOREACH b IN LSIDE %]</aside>[% END %]" >> tmpl/layout/aside.tmpl
