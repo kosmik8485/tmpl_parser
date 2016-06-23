@@ -77,7 +77,7 @@ find ./tmpl -regex ".+\(servi\|uslug\).*" -exec mkdir -p -m777 tmpl/service \; -
 find ./tmpl -iname "arti*" -exec mkdir -p -m777 tmpl/article \; -exec mv {} tmpl/article/ \;
 find ./tmpl -iname "proje*" -exec mkdir -p -m777 tmpl/project \; -exec mv {} tmpl/project/ \;
 
-cp -R $TMPL_DIR/tmpl tmpl/
+cp -R "$TMPL_DIR/tmpl" ./
 
 echo "[% CATCH ; CLEAR ; INCLUDE tmpl/error.tmpl ; END %]" >> index.tmpl
 echo "[% IF LSIDE.size %]<aside class=\"side\">[% INCLUDE \$b FOREACH b IN LSIDE %]</aside>[% END %]" >> tmpl/layout/aside.tmpl
