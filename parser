@@ -71,11 +71,11 @@ done
 rm *.tmp.*
 rm *.tmp
 
-find ./tmpl -regex "\(catalog\|spisok\|good\).*" -exec mkdir -p -m777 tmpl/catalog \; -exec mv {} tmpl/catalog/ \;
-find ./tmpl -name "news*" -exec mkdir -p -m777 tmpl/news \; -exec mv {} tmpl/news/ \;
-find ./tmpl -regex "\(servi\|uslug\).*" -exec mkdir -p -m777 tmpl/service \; -exec mv {} tmpl/service/ \;
-find ./tmpl -name "arti*" -exec mkdir -p -m777 tmpl/article \; -exec mv {} tmpl/article/ \;
-find ./tmpl -name "proje*" -exec mkdir -p -m777 tmpl/project \; -exec mv {} tmpl/project/ \;
+find ./tmpl -iregex ".+\(catalog\|spisok\|good\).*" -exec mkdir -p -m777 tmpl/catalog \; -exec mv {} tmpl/catalog/ \;
+find ./tmpl -iname "news*" -exec mkdir -p -m777 tmpl/news \; -exec mv {} tmpl/news/ \;
+find ./tmpl -regex ".+\(servi\|uslug\).*" -exec mkdir -p -m777 tmpl/service \; -exec mv {} tmpl/service/ \;
+find ./tmpl -iname "arti*" -exec mkdir -p -m777 tmpl/article \; -exec mv {} tmpl/article/ \;
+find ./tmpl -iname "proje*" -exec mkdir -p -m777 tmpl/project \; -exec mv {} tmpl/project/ \;
 
 cp -R $TMPL_DIR/tmpl tmpl/
 
