@@ -63,7 +63,7 @@ for html in `ls | grep html`
 do
   if [ "$html" != "index.html" ]
   then
-    echo "[% import(content) %]" > ${html%.*}.tmpl
+    echo "[% import(content) %]" > tmpl/${html%.*}.tmpl
     sed '/<!--\/\/ content \/\/-->/,/<!--\/\/ end content \/\/-->/!d;s/\t/  /g' $html >> tmpl/${html%.*}.tmpl
   fi
 done
