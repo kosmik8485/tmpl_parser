@@ -12,7 +12,7 @@ sed 's/\t/  /g' index.html > index.tmp
 
 #<head>
 sed '/<head>/,/<\/head>/!d;s/\t/  /g' index.tmp > tmpl/layout/head.tmpl
-echo "<script src='/js/ajax.js'></script>" >> tmpl/lyaout/head.tmpl
+echo "<script src='/js/ajax.js'></script>" >> tmpl/layout/head.tmpl
 sed 's/<\/head>/<\/head>\r\n[% layout.head %]/' index.tmp > index.tmp.0
 sed '/<head>/,/<\/head>/d' index.tmp.0 > index.tmp.1
 
