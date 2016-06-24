@@ -6,7 +6,7 @@
 [% IF maxpage> 1%]
 <ul class="list ibs pages">
   [% len_block = 5 ; IF page> 1 %]
-    <li class="item"><a class="link" href="[% href ; '?page=' _ (page - 1) IF (page - 1)> 1 ; add_params.replace('^\?','&') %]">&lt;&lt;</a></li>
+    <li class="item"><a class="link" href="[% href ; '?page=' _ (page - 1) IF (page - 1)> 1 ; (page - 1) > 1 ? add_params.replace('^\?','&') : add_params %]">&lt;&lt;</a></li>
   [% END ; cur_page = 1 %]
   [% WHILE (cur_page <= maxpage) %] 
     [% IF cur_page == 1 && page != cur_page %]
